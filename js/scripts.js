@@ -46,3 +46,18 @@ var pokemonRepository = (function () {
         search: search
     };
 })();
+
+function addListItem(item) {
+    var container = document.querySelector('.pokemon-list');
+    var listItem = document.createElement('li');
+
+    var title = document.createElement('div');
+    title.innerText = item.name;
+    listItem.appendChild(title);
+
+    container.appendChild(listItem);
+}
+
+addListItem({ name: 'Pikachu' });
+addListItem({ name: 'Bulbasaur' });
+addListItem({ name: 'Charmander' });
