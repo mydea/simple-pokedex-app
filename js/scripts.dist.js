@@ -1,6 +1,10 @@
-let pokemonRepository = (function () {
-    let items = [];
-    let apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var pokemonRepository = function () {
+    var items = [];
+    var apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
 
     function addSingle(item) {
         if (validate(item)) {
@@ -19,7 +23,7 @@ let pokemonRepository = (function () {
     }
 
     function validate(item) {
-        return typeof item === 'object' && item.name;
+        return (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && item.name;
     }
 
     function getAll() {
@@ -27,7 +31,7 @@ let pokemonRepository = (function () {
     }
 
     function remove(item) {
-        let itemPos = items.indexOf(item);
+        var itemPos = items.indexOf(item);
         if (itemPos > -1) {
             items.splice(itemPos, 1);
         }
@@ -50,7 +54,7 @@ let pokemonRepository = (function () {
             return response.json();
         }).then(function (json) {
             json.results.forEach(function (item) {
-                let pokemon = {
+                var pokemon = {
                     name: item.name,
                     detailsUrl: item.url
                 };
@@ -60,14 +64,16 @@ let pokemonRepository = (function () {
         }).catch(function (e) {
             console.error(e);
             hideLoadingMessage();
-        })
+        });
     }
 
     function loadDetails(item) {
-        let { detailsUrl: url, imageUrl } = item;
+        var url = item.detailsUrl,
+            imageUrl = item.imageUrl;
 
         // If an image is already loaded, we don't need to fetch it again
         // We still want to return a Promise, as otherwise the .then will not work
+
         if (imageUrl) {
             return Promise.resolve(); // This returns a new Promise that resolves immediately
         }
@@ -89,32 +95,32 @@ let pokemonRepository = (function () {
     }
 
     return {
-        add,
-        getAll,
-        remove,
-        search,
-        loadList,
-        loadDetails
+        add: add,
+        getAll: getAll,
+        remove: remove,
+        search: search,
+        loadList: loadList,
+        loadDetails: loadDetails
     };
-})();
+}();
 
 function addListItem(item) {
-    let container = document.querySelector('.pokemon-list');
-    let listItem = document.createElement('li');
+    var container = document.querySelector('.pokemon-list');
+    var listItem = document.createElement('li');
 
-    let title = document.createElement('div');
+    var title = document.createElement('div');
     title.innerText = item.name;
     listItem.appendChild(title);
 
     container.appendChild(listItem);
 
-    listItem.addEventListener('click', () => {
+    listItem.addEventListener('click', function () {
         showDetails(item, listItem);
     });
 }
 
 function showDetails(item, listItem) {
-    let listItemDetails = listItem.querySelector('.details');
+    var listItemDetails = listItem.querySelector('.details');
 
     // If details already exist, remove them
     if (listItemDetails) {
@@ -122,7 +128,7 @@ function showDetails(item, listItem) {
     } else {
         // Else, first load the details, then add the element
         pokemonRepository.loadDetails(item).then(function () {
-            let imageUrl = item.imageUrl;
+            var imageUrl = item.imageUrl;
 
             listItemDetails = document.createElement('img');
             listItemDetails.setAttribute('src', imageUrl);
@@ -133,9 +139,9 @@ function showDetails(item, listItem) {
 }
 
 function showLoadingMessage() {
-    let container = document.querySelector('main');
+    var container = document.querySelector('main');
 
-    let loadingMessage = document.createElement('div');
+    var loadingMessage = document.createElement('div');
     loadingMessage.classList.add('loading-message');
     loadingMessage.innerText = 'Loading...';
 
@@ -143,13 +149,13 @@ function showLoadingMessage() {
 }
 
 function hideLoadingMessage() {
-    let loadingMessage = document.querySelector('.loading-message');
+    var loadingMessage = document.querySelector('.loading-message');
     loadingMessage.parentElement.removeChild(loadingMessage);
 }
 
 pokemonRepository.loadList().then(function () {
     // Now the data is loaded!
-    let allPokemon = pokemonRepository.getAll();
+    var allPokemon = pokemonRepository.getAll();
     allPokemon.forEach(function (item) {
         addListItem(item);
     });
